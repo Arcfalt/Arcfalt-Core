@@ -3,7 +3,7 @@ Arcfalt-Core is a bunch of experimental things I've made for fun in TSWoW. This 
 
 ## Installation
 1. Use the TSWoW installation guide: [TSWoW Wiki](https://tswow.github.io/tswow-wiki/home/) 
-2. After TSWoW is installed, drag and drop any of the modules into your modules/ folder.
+2. After TSWoW is installed, put this into your modules/ folder as 'arcfalt-core'.
 3. Finally, run `build all` to assure all parts are correctly built.
 
 ## Important Note
