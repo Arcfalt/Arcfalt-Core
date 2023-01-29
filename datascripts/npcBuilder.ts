@@ -11,6 +11,7 @@ import { UnitClass } from 'wow/wotlk/std/Creature/UnitClass';
 import { RangedType, CreatureOutfit } from "wow/wotlk/std/CreatureOutfits/CreatureOutfits";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
 import { MODNAME } from "./datascripts";
+import { buildGossip, GossipBuilder } from './gossipBuilder';
 
 export declare type NpcBuilder = {
 	Tag?: string,
@@ -27,6 +28,8 @@ export declare type NpcBuilder = {
 	MinLevel?: number,
 	MaxLevel?: number,
 	UTag?: string,
+
+	Gossip?: number | GossipBuilder,
 
 	GuardGossipOrigin?: number,
 	GuardGossipOption?: string,
@@ -59,6 +62,7 @@ export declare type NpcBuilder = {
 	WalkSpeed?: number,
 	RunSpeed?: number,
 	AnimateSwim?: boolean,
+	BasicHuman?: boolean,
 
 	Class?: UnitClass,
 
@@ -100,26 +104,18 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 		npc.UnitFlags.IMMUNE_TO_PC.set(c.Civilian);
 		npc.UnitFlags.IMMUNE_TO_NPC.set(c.Civilian);
 	}
+	if (c.BasicHuman) {
+		npc.Type.set(CreatureType.HUMANOID);
+		npc.UnitFlags.CAN_SWIM.set(true);
+	}
 	if (c.Boss !== undefined) npc.TypeFlags.BOSS.set(c.Boss);
 	if (c.Speed !== undefined) npc.MovementSpeed.set(c.Speed, c.Speed);
 	else if (c.WalkSpeed !== undefined && c.RunSpeed !== undefined) npc.MovementSpeed.set(c.WalkSpeed, c.RunSpeed);
 	if (c.AnimateSwim !== undefined) npc.UnitFlags.CAN_SWIM.set(c.AnimateSwim);
-
 	if (c.Class !== undefined) {
 		npc.UnitClass.set(c.Class);
 		if (c.Class === UnitClass.PALADIN || c.Class === UnitClass.MAGE) npc.UnitFlags.REGENERATE_POWER.set(true);
 		else npc.UnitFlags.REGENERATE_POWER.set(false);
-	}
-
-	if (c.TrainerClassMask !== undefined && c.TrainerID !== undefined && c.TrainerGossipClass !== undefined && c.TrainerGossipNotClass !== undefined)
-	{
-		npc.NPCFlags.GOSSIP.set(true);
-		setupTrainerGossip(npc, c.TrainerGossipClass, c.TrainerGossipNotClass, c.TrainerClassMask, c.TrainerID, c.TrainerCustomTrainText);
-	}
-	else if (c.SimpleGossip !== undefined)
-	{
-		npc.NPCFlags.GOSSIP.set(true);
-		npc.Gossip.getNew().Text.add({enGB:c.SimpleGossip});
 	}
 
 	let setEquip: boolean = false;
@@ -195,6 +191,30 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 				option.Action.GOSSIP.setLink(guardGossip.ID);
 			});
 		}
+	}
+
+	if (c.TrainerID !== undefined) {
+		npc.NPCFlags.TRAINER.set(true);
+		npc.NPCFlags.CLASS_TRAINER.set(true);
+		npc.Trainer.set(c.TrainerID);
+	}
+
+	if (c.Gossip !== undefined)
+	{
+		npc.NPCFlags.GOSSIP.set(true);
+		if (typeof c.Gossip === "number") npc.Gossip.set(c.Gossip);
+		else if (poi !== undefined) npc.Gossip.set(buildGossip(c.Gossip, [poi]));
+		else npc.Gossip.set(buildGossip(c.Gossip));
+	}
+	else if (c.TrainerClassMask !== undefined && c.TrainerID !== undefined && c.TrainerGossipClass !== undefined && c.TrainerGossipNotClass !== undefined)
+	{
+		npc.NPCFlags.GOSSIP.set(true);
+		setupTrainerGossip(npc, c.TrainerGossipClass, c.TrainerGossipNotClass, c.TrainerClassMask, c.TrainerID, c.TrainerCustomTrainText);
+	}
+	else if (c.SimpleGossip !== undefined)
+	{
+		npc.NPCFlags.GOSSIP.set(true);
+		npc.Gossip.getNew().Text.add({enGB:c.SimpleGossip});
 	}
 
 	return npc;
@@ -278,11 +298,6 @@ export function buildDressNpc(c: DressNpcBuilder) : CreatureOutfit {
 }
 
 export function setupTrainerGossip(target: CreatureTemplate, whenClass: string, whenNotClass: string, forClass: ClassMask, trainerId: number, customTrainingText?: string) : CreatureTemplate {
-	// Set up trainer data
-	target.NPCFlags.TRAINER.set(true);
-	target.NPCFlags.CLASS_TRAINER.set(true);
-	target.Trainer.set(trainerId);
-
 	// Create gossip
 	let gossip = std.Gossip.createStatic(MODNAME, "gossip-" + target.ID + "-trainer");
 	target.Gossip.set(gossip.ID);
@@ -316,33 +331,6 @@ export function setupTrainerGossip(target: CreatureTemplate, whenClass: string, 
 	std.SQL.conditions.add(15, gossipMenuId, 2, 0, 0, 15, 0, forClass, 0, 0);
 
 	return target;
-}
-
-export function getTrainerId(forClass: ClassMask, lowLevel: boolean) : number {
-	switch (forClass) {
-		case ClassMask.SHAMAN:
-			return 7658;
-		case ClassMask.DRUID:
-			return 7452;
-		case ClassMask.WARLOCK:
-			return 2544;
-		case ClassMask.HUNTER:
-			return 7643;
-		case ClassMask.MAGE:
-			return 2522;
-		case ClassMask.DEATH_KNIGHT:
-			return 35062;
-		case ClassMask.PRIEST:
-			return 7169;
-		case ClassMask.PALADIN:
-			return 5299;
-		case ClassMask.WARRIOR:
-			return 3147;
-		case ClassMask.ROGUE:
-			return 8221;
-		default:
-			return 0;
-	}
 }
 
 export function getGenericTrainingText(forClass: ClassMask) : number {

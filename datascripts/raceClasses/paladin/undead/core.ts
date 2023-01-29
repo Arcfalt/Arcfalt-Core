@@ -49,6 +49,11 @@ buildNpc({
 	TrainerGossipClass: "The light itself harms us for what we are, yet we do not forsake it.  It is we who are forsaken by the world, we who are cast into the shadows...  But we will hold steadfast to the light through every trial.$b$bWe will not forsake ourselves.",
 	TrainerGossipNotClass: "May you find light in the shadows, $c.",
 
+	GuardGossipOrigin: 3354,
+	GuardGossipOption: 'Paladin',
+	GuardGossipPoiName: 'Sister Ulita',
+	GuardGossipText: "At the southeast edge of town is the Gallows' End Tavern.  Go there and head upstairs, and you'll find Sister Ulita inside the reading room.",
+
 	BakedNpc: "udPldTrainer1",
 	BakedNpcSound: NpcSoundIDs.UndeadFemaleWarrior,
 	EquipMainHand: 1511,
