@@ -1,4 +1,4 @@
-import { buildItem } from "../../../itemBuilder";
+import { buildItem } from "../../../util/itemBuilder";
 
 export const H_PLD_START_SHIRT_A = buildItem({
 	Tag: 'h-pld-gear-shirt-starter-a',

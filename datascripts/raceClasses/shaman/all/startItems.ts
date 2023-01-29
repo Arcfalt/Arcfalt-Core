@@ -1,4 +1,4 @@
-import { buildItem } from "../../../itemBuilder";
+import { buildItem } from "../../../util/itemBuilder";
 
 export const A_SHA_START_SHIRT = buildItem({
 	Tag: 'a-sha-gear-shirt-starter',

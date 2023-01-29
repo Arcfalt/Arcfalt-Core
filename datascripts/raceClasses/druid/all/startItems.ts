@@ -1,4 +1,4 @@
-import { buildItem } from "../../../itemBuilder";
+import { buildItem } from "../../../util/itemBuilder";
 
 export const A_DRU_START_CHEST = buildItem({
 	Tag: 'a-dru-gear-chest-starter',

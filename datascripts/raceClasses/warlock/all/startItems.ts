@@ -1,4 +1,4 @@
-import { buildItem } from "../../../itemBuilder";
+import { buildItem } from "../../../util/itemBuilder";
 
 export const H_WLK_START_CHEST = buildItem({
 	Tag: 'h-wlk-gear-chest-starter',

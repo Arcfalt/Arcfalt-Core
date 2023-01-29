@@ -1,7 +1,7 @@
 import { std } from "wow/wotlk";
 import { ClassIDs } from "wow/wotlk/std/Class/ClassIDs";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
-import { buildItem } from "../../../itemBuilder";
+import { buildItem } from "../../../util/itemBuilder";
 import { buildRaceClassPair } from "../../../raceClassBuilder";
 
 buildRaceClassPair({
