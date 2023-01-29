@@ -3,7 +3,7 @@ import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { FactionTemplateValues } from "wow/wotlk/std/Faction/FactionTemplates";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
 import { TrainerID, NpcSoundIDs, AddonBytes1IDs, AddonBytes2IDs } from "../../../commonIds";
-import { buildItem } from "../../../util/itemBuilder";
+import { buildItem } from "../../../itemBuilder";
 import { appendNpc, buildNpc } from "../../../npcBuilder";
 import { buildRaceClassPair } from "../../../raceClassBuilder";
 

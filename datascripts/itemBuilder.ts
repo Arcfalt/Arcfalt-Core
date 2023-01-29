@@ -1,6 +1,6 @@
 import { std } from "wow/wotlk";
 import { ItemTemplate } from "wow/wotlk/std/Item/ItemTemplate";
-import { MODNAME } from "../datascripts";
+import { MODNAME } from "./datascripts";
 
 export declare type ItemBuilder = {
 	Tag: string,
