@@ -11,3 +11,6 @@ std.Quests.load(1717).CompleteText.set(
 std.Quests.load(3110).IncompleteText.set(
 	{enGB:"Ach! Ya made it, $N! Wonderful!$B$BI was gonna say, I was about to lose faith that ye'd arrive at all... get it, lose faith? It's a joke, $Glad:lass;... aww, nevermind. Ya didn't come here for me bad jokes anyway."}
 );
+
+// Fixed Kor'kron Overseers having a 50% chance of saying old abomination gossip text when asked where the skinning trainer is by a female player character
+std.NPCText.load(14923).get(1).Text.Female.enGB.set(std.NPCText.load(14923).get(1).Text.Male.enGB.get());
