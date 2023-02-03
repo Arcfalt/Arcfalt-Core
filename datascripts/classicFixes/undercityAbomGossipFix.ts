@@ -38,7 +38,7 @@ export const ABOM_GOSSIP_CLASS_TRAINERS = buildGossip({
 		GossipLink: {SimpleText: "Us no like paladins.  Elf lady come to city, stay in Royal Quarter.  Her paladin.  You talk, learn paladin things."}
 	}, {
 		SimpleText: "Priest", POI: 332, Icon: GossipIcon.CHAT,
-		GossipLink: {SimpleText: "Priest trainer?  You go to outer ring or War Quarter and look for them there."}
+		GossipLink: {SimpleText: "Priest trainer?  You go to outer ring of War Quarter and look for them there."}
 	}, {
 		SimpleText: "Rogue", POI: 333, Icon: GossipIcon.CHAT,
 		GossipLink: {SimpleText: "Rogues in building on outer ring of Rogues' Quarter."}

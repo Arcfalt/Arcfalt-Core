@@ -3,6 +3,7 @@ import { ClassIDs } from "wow/wotlk/std/Class/ClassIDs";
 import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { FactionTemplateValues } from "wow/wotlk/std/Faction/FactionTemplates";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
+import { ABOM_GOSSIP_CLASS_TRAINERS } from "../../../classicFixes/undercityAbomGossipFix";
 import { TrainerID, NpcSoundIDs } from "../../../commonIds";
 import { buildNpc } from "../../../npcBuilder";
 import { buildRaceClassPair } from "../../../raceClassBuilder";
@@ -73,6 +74,17 @@ buildNpc({
 	TrainerID: TrainerID.PaladinHorde,
 	TrainerGossipClass: "For years, I believed that I could never atone for failing to protect my order.  My life...  But I realize now, that the light has not forsaken me.  Has not forsaken us.$b$bThe light harms us by its very nature, yet it still cradles us in its protection all the same.$b$bI would show you the way, if you require it of me.  Our faith will never again be shaken, no matter our path.  No matter our future.  This I vow.",
 	TrainerGossipNotClass: "For years, I believed that I could never atone for failing to protect my order.  My life...  But I realize now, $c, that the light has not forsaken me.  Has not forsaken us.$b$bThe light harms us by its very nature, yet it still cradles us in its protection all the same.$b$bYou may not be a paladin, but I hope you can find your own light, my friend.",
+
+	GuardGossipPoiName: "Undercity Paladin Trainers",
+	InjectGossip: [{
+		Target: ABOM_GOSSIP_CLASS_TRAINERS,
+		Option: "Paladin",
+		Gossip: "Us no like paladins.  They use spells that hurt skin.  You go to inner ring of War Quarter and look for them there."
+	}, {
+		Target: 10768,
+		Option: "Paladin",
+		Gossip: "You'll find the paladins training in the War Quarter. Head to the inner ring there.",
+	}],
 
 	BakedNpc: "udPldBallador",
 	BakedNpcSound: NpcSoundIDs.UndeadMaleDark,

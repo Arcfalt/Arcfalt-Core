@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from "path";
 import { std } from "wow/wotlk";
 import { ClassIDs } from "wow/wotlk/std/Class/ClassIDs";
-import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { Genders } from "wow/wotlk/std/Conditions/Settings/Gender";
 import { CreatureInstance } from 'wow/wotlk/std/Creature/CreatureInstance';
 import { CreatureInstancePosition, CreatureTemplate } from "wow/wotlk/std/Creature/CreatureTemplate";
@@ -11,7 +10,7 @@ import { UnitClass } from 'wow/wotlk/std/Creature/UnitClass';
 import { RangedType, CreatureOutfit } from "wow/wotlk/std/CreatureOutfits/CreatureOutfits";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
 import { MODNAME } from "./datascripts";
-import { buildGossip, GossipBuilder } from './gossipBuilder';
+import { buildGossip, GossipBuilder, GossipInjector, injectGossip } from './gossipBuilder';
 
 export declare type NpcBuilder = {
 	Tag?: string,
@@ -35,6 +34,8 @@ export declare type NpcBuilder = {
 	GuardGossipOption?: string,
 	GuardGossipText?: string,
 	GuardGossipPoiName?: string,
+
+	InjectGossip?: GossipInjector[],
 
 	TrainerID?: number,
 	TrainerClassMask?: number,
@@ -119,8 +120,7 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	}
 
 	let setEquip: boolean = false;
-	if (c.EquipMainHand !== undefined || c.EquipOffHand !== undefined || c.EquipRanged !== undefined)
-	{
+	if (c.EquipMainHand !== undefined || c.EquipOffHand !== undefined || c.EquipRanged !== undefined) {
 		if (c.AppendExistingSpawn && npc.Weapons.length > 0) {
 			let weps = npc.Weapons.getIndex(0);
 			if (c.EquipMainHand) weps.RightHand.set(c.EquipMainHand);
@@ -132,23 +132,18 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	}
 
 	let poi: number | undefined = undefined;
-	if (c.GuardGossipOrigin !== undefined && c.GuardGossipText !== undefined && c.GuardGossipOption !== undefined && c.GuardGossipPoiName !== undefined)
-	{
+	if (c.GuardGossipPoiName !== undefined) {
 		poi = std.IDs.points_of_interest.dynamicId();
 	}
-	if (c.Spawn !== undefined || c.AppendExistingSpawn !== undefined)
-	{
+	if (c.Spawn !== undefined || c.AppendExistingSpawn !== undefined) {
 		let spawns: CreatureInstance[] | undefined = undefined;
 		if (c.Spawn !== undefined) spawns = npc.Spawns.addGet(MODNAME, c.Tag + '-spawn', c.Spawn);
 		else if (c.AppendExistingSpawn && npc.Spawns.length > 0) spawns = npc.Spawns.get();
-		if (spawns !== undefined)
-		{
-			for (let i = 0; i < spawns.length; i++)
-			{
+		if (spawns !== undefined) {
+			for (let i = 0; i < spawns.length; i++) {
 				let spawn = spawns[i];
 				if (i == 0 && poi !== undefined) std.SQL.points_of_interest.add(poi, { PositionX: spawn.Position.X.get(), PositionY: spawn.Position.Y.get(), Icon: 7, Flags: 99, Importance: 0, Name: c.GuardGossipPoiName });
-				if (setEquip)
-				{
+				if (setEquip) {
 					spawn.EquipmentID.set(1);
 					if (c.EquipMainHand === undefined && c.EquipOffHand === undefined && c.EquipRanged !== undefined && c.AddonBytes2 === undefined) spawn.AddonBytes2.set(2);
 				}
@@ -159,38 +154,21 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 			}
 		}
 	}
-	if (c.GuardGossipOrigin !== undefined && c.GuardGossipText !== undefined && c.GuardGossipOption !== undefined && c.GuardGossipPoiName !== undefined)
+
+	let injectGossips = c.InjectGossip;
+	if (c.GuardGossipOrigin !== undefined && c.GuardGossipText !== undefined && c.GuardGossipOption !== undefined)
 	{
-		let guardGossip = std.Gossip.createStatic(MODNAME, c.Tag + '-poi');
-		guardGossip.Text.addMod((value) =>
-		{
-			if (c.GuardGossipText !== undefined)
-			{
-				value.Text.Female.enGB.set(c.GuardGossipText);
-				value.Text.Male.enGB.set(c.GuardGossipText);
-			}
+		if (injectGossips === undefined) injectGossips = [];
+		injectGossips.push({
+			Target: c.GuardGossipOrigin,
+			Option: c.GuardGossipOption,
+			Gossip: c.GuardGossipText
 		});
-		let existing = false;
-		let gos = std.Gossip.load(c.GuardGossipOrigin);
-		let text = c.GuardGossipOption;
-		gos.Options.forEach((option, index) => {
-			if (existing || option.Text.getRef().Text.Male.enGB.get() != text) return;
-			existing = true;
-			if (poi !== undefined) option.POI.set(poi);
-			option.Text.setSimple({ enGB: text }, { enGB: text });
-			option.Icon.CHAT.set();
-			option.Action.GOSSIP.setLink(guardGossip.ID);
+	}
+	if (injectGossips !== undefined) {
+		injectGossips.forEach(value => {
+			injectGossip(value, poi);
 		});
-		if (existing == false)
-		{
-			gos.Options.addMod((option) =>
-			{
-				if (poi !== undefined) option.POI.set(poi);
-				option.Text.setSimple({ enGB: text }, { enGB: text });
-				option.Icon.CHAT.set();
-				option.Action.GOSSIP.setLink(guardGossip.ID);
-			});
-		}
 	}
 
 	if (c.TrainerID !== undefined) {
@@ -199,22 +177,21 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 		npc.Trainer.set(c.TrainerID);
 	}
 
-	if (c.Gossip !== undefined)
-	{
-		npc.NPCFlags.GOSSIP.set(true);
-		if (typeof c.Gossip === "number") npc.Gossip.set(c.Gossip);
-		else if (poi !== undefined) npc.Gossip.set(buildGossip(c.Gossip, [poi]));
-		else npc.Gossip.set(buildGossip(c.Gossip));
+	let useGossip = c.Gossip;
+	if (c.TrainerClassMask !== undefined && c.TrainerGossipClass !== undefined && c.TrainerGossipNotClass !== undefined) {
+		useGossip = buildGossip({
+			SimpleClassText: {ClassMask: c.TrainerClassMask, ClassText: c.TrainerGossipClass, NotClassText: c.TrainerGossipNotClass},
+			AddClassTrainer: {ClassMask: c.TrainerClassMask},
+		});
 	}
-	else if (c.TrainerClassMask !== undefined && c.TrainerID !== undefined && c.TrainerGossipClass !== undefined && c.TrainerGossipNotClass !== undefined)
-	{
-		npc.NPCFlags.GOSSIP.set(true);
-		setupTrainerGossip(npc, c.TrainerGossipClass, c.TrainerGossipNotClass, c.TrainerClassMask, c.TrainerID, c.TrainerCustomTrainText);
+	else if (c.SimpleGossip !== undefined) {
+		useGossip = buildGossip({SimpleText: c.SimpleGossip});
 	}
-	else if (c.SimpleGossip !== undefined)
-	{
+	if (useGossip !== undefined) {
 		npc.NPCFlags.GOSSIP.set(true);
-		npc.Gossip.getNew().Text.add({enGB:c.SimpleGossip});
+		if (typeof useGossip === "number") npc.Gossip.set(useGossip);
+		else if (poi !== undefined) npc.Gossip.set(buildGossip(useGossip, [poi]));
+		else npc.Gossip.set(buildGossip(useGossip));
 	}
 
 	return npc;
@@ -295,80 +272,6 @@ export function buildDressNpc(c: DressNpcBuilder) : CreatureOutfit {
 	if (c.Ranged) o.Ranged.set(c.Ranged);
 	if (c.NPCSounds) o.NPCSounds.set(c.NPCSounds);
 	return o;
-}
-
-export function setupTrainerGossip(target: CreatureTemplate, whenClass: string, whenNotClass: string, forClass: ClassMask, trainerId: number, customTrainingText?: string) : CreatureTemplate {
-	// Create gossip
-	let gossip = std.Gossip.createStatic(MODNAME, "gossip-" + target.ID + "-trainer");
-	target.Gossip.set(gossip.ID);
-	let classText = std.NPCText.create(MODNAME, "gossipText-" + target.ID + "-class");
-	classText.add({enGB: whenClass});
-	let notClassText = std.NPCText.create(MODNAME, "gossipText-" + target.ID + "-notClass");
-	notClassText.add({enGB: whenNotClass});
-
-	// Get gossip ids
-	let gossipMenuId = gossip.ID;
-	let classTextId = classText.ID;
-	let nonClassTextId = notClassText.ID;
-
-	// Insert multi gossip entries with class conditions
-	let existing = std.SQL.gossip_menu.query({MenuID: gossipMenuId});
-	if (existing) existing.delete();
-	std.SQL.gossip_menu.add(gossipMenuId, classTextId);
-	std.SQL.gossip_menu.add(gossipMenuId, nonClassTextId);
-	std.SQL.conditions.add(14, gossipMenuId, classTextId, 0, 0, 15, 0, forClass, 0, 0);
-	std.SQL.conditions.add(14, gossipMenuId, nonClassTextId, 0, 0, 15, 0, forClass, 0, 0, {NegativeCondition: 1});
-
-	let trainText : number;
-	if (customTrainingText) trainText = std.BroadcastTexts.createSimple({enGB: customTrainingText}).ID;
-	else trainText = getGenericTrainingText(forClass);
-	std.SQL.gossip_menu_option.add(gossipMenuId, 0, {OptionIcon: 3, OptionBroadcastTextID: trainText, OptionType: 5, OptionNpcFlag: 16, ActionMenuID: 0});
-	std.SQL.gossip_menu_option.add(gossipMenuId, 1, {OptionIcon: 0, OptionBroadcastTextID: 8271, OptionType: 16, OptionNpcFlag: 16, ActionMenuID: 4461});
-	std.SQL.gossip_menu_option.add(gossipMenuId, 2, {OptionIcon: 0, OptionBroadcastTextID: 33762, OptionType: 20, OptionNpcFlag: 1, ActionMenuID: 10371});
-
-	std.SQL.conditions.add(15, gossipMenuId, 0, 0, 0, 15, 0, forClass, 0, 0);
-	std.SQL.conditions.add(15, gossipMenuId, 1, 0, 0, 15, 0, forClass, 0, 0);
-	std.SQL.conditions.add(15, gossipMenuId, 2, 0, 0, 15, 0, forClass, 0, 0);
-
-	return target;
-}
-
-export function getGenericTrainingText(forClass: ClassMask) : number {
-	switch (forClass) {
-		case ClassMask.SHAMAN:
-			// Teach me the ways of the spirits.
-			return 7658;
-		case ClassMask.DRUID:
-			// I seek training as a druid.
-			return 7452;
-		case ClassMask.WARLOCK:
-			// I am interested in warlock training.
-			return 2544;
-		case ClassMask.HUNTER:
-			// I seek training in the ways of the Hunter.
-			return 7643;
-		case ClassMask.MAGE:
-			// I am interested in mage training.
-			return 2522;
-		case ClassMask.DEATH_KNIGHT:
-			// I seek training.
-			return 35062;
-		case ClassMask.PRIEST:
-			// I seek more training in the priestly ways.
-			return 7169;
-		case ClassMask.PALADIN:
-			// I would like to train further in the ways of the Light.
-			return 5299;
-		case ClassMask.WARRIOR:
-			// I require warrior training.
-			return 3147;
-		case ClassMask.ROGUE:
-			// I would like to train.
-			return 8221;
-		default:
-			// Train me.
-			return 3266;
-	}
 }
 
 function getModelIdFromRaceId(raceId: number, genderId: number) : number {

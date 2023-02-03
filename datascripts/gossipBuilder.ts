@@ -1,10 +1,10 @@
 import { SQL, std } from "wow/wotlk";
+import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { Condition } from "wow/wotlk/std/Conditions/Condition";
 import { CreatureTemplate } from "wow/wotlk/std/Creature/CreatureTemplate";
 import { Gossip } from "wow/wotlk/std/Gossip/Gossip";
 import { GossipIcon } from "wow/wotlk/std/Gossip/GossipIcon";
 import { MODNAME } from "./datascripts";
-import { getGenericTrainingText } from "./npcBuilder";
 
 export declare type TextEntryBuilder = {
     Text?: string,
@@ -54,6 +54,12 @@ export declare type GossipBuilder = {
     AddClassTrainer?: {ClassMask: number},
 }
 
+export declare type GossipInjector = {
+	Target: number,
+	Option: string,
+	Gossip: string | number | GossipBuilder,
+}
+
 export function buildGossip(g: GossipBuilder, pois?: number[]): number {
     let id : number;
     if (g.Tag !== undefined) id = std.IDs.gossip_menu.id(MODNAME, g.Tag);
@@ -97,6 +103,7 @@ export function buildGossip(g: GossipBuilder, pois?: number[]): number {
             if (value.Text !== undefined) entry.Text.set({enGB: value.Text});
             if (value.Probability !== undefined) entry.Probability.set(value.Probability);
             if (value.Lang !== undefined) entry.Lang.set(value.Lang);
+            else entry.Lang.set(0);
             if (value.Emote !== undefined) entry.Emote.set(value.Emote);
             if (value.EmoteDelay !== undefined) entry.EmoteDelay.set(value.EmoteDelay);
         })
@@ -143,6 +150,70 @@ export function buildGossip(g: GossipBuilder, pois?: number[]): number {
     });
 
     return id;
+}
+
+export function injectGossip(injector: GossipInjector, poi?: number) {
+	let gossip : number;
+	if (typeof injector.Gossip === "string") gossip = buildGossip({SimpleText: injector.Gossip});
+	else if (typeof injector.Gossip === "number") gossip = injector.Gossip;
+	else gossip = buildGossip(injector.Gossip);
+	let existing = false;
+	let gos = std.Gossip.load(injector.Target);
+	let text = injector.Option;
+	gos.Options.forEach(option => {
+		if (existing || option.Text.getRef().Text.Male.enGB.get() != text) return;
+		existing = true;
+		if (poi !== undefined) option.POI.set(poi);
+		option.Text.setSimple({ enGB: text }, { enGB: text });
+		option.Icon.CHAT.set();
+		option.Action.GOSSIP.setLink(gossip);
+	});
+	if (existing == false) {
+		gos.Options.addMod((option) => {
+			if (poi !== undefined) option.POI.set(poi);
+			option.Text.setSimple({ enGB: text }, { enGB: text });
+			option.Icon.CHAT.set();
+			option.Action.GOSSIP.setLink(gossip);
+		});
+	}
+}
+
+export function getGenericTrainingText(forClass: ClassMask) : number {
+	switch (forClass) {
+		case ClassMask.SHAMAN:
+			// Teach me the ways of the spirits.
+			return 7658;
+		case ClassMask.DRUID:
+			// I seek training as a druid.
+			return 7452;
+		case ClassMask.WARLOCK:
+			// I am interested in warlock training.
+			return 2544;
+		case ClassMask.HUNTER:
+			// I seek training in the ways of the Hunter.
+			return 7643;
+		case ClassMask.MAGE:
+			// I am interested in mage training.
+			return 2522;
+		case ClassMask.DEATH_KNIGHT:
+			// I seek training.
+			return 35062;
+		case ClassMask.PRIEST:
+			// I seek more training in the priestly ways.
+			return 7169;
+		case ClassMask.PALADIN:
+			// I would like to train further in the ways of the Light.
+			return 5299;
+		case ClassMask.WARRIOR:
+			// I require warrior training.
+			return 3147;
+		case ClassMask.ROGUE:
+			// I would like to train.
+			return 8221;
+		default:
+			// Train me.
+			return 3266;
+	}
 }
 
 export function logCreatureGossip(target: number | CreatureTemplate) {
