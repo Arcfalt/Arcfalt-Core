@@ -180,8 +180,7 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	let useGossip = c.Gossip;
 	if (c.TrainerClassMask !== undefined && c.TrainerGossipClass !== undefined && c.TrainerGossipNotClass !== undefined) {
 		useGossip = buildGossip({
-			SimpleClassText: {ClassMask: c.TrainerClassMask, ClassText: c.TrainerGossipClass, NotClassText: c.TrainerGossipNotClass},
-			AddClassTrainer: {ClassMask: c.TrainerClassMask},
+			AddClassTrainer: {ClassMask: c.TrainerClassMask, ClassText: c.TrainerGossipClass, NotClassText: c.TrainerGossipNotClass},
 		});
 	}
 	else if (c.SimpleGossip !== undefined) {

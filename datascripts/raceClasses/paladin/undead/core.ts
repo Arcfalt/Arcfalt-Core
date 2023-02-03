@@ -5,6 +5,7 @@ import { FactionTemplateValues } from "wow/wotlk/std/Faction/FactionTemplates";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
 import { ABOM_GOSSIP_CLASS_TRAINERS } from "../../../classicFixes/undercityAbomGossipFix";
 import { TrainerID, NpcSoundIDs } from "../../../commonIds";
+import { buildGossip } from "../../../gossipBuilder";
 import { buildNpc } from "../../../npcBuilder";
 import { buildRaceClassPair } from "../../../raceClassBuilder";
 import { H_PLD_START_FEET_B, H_PLD_START_LEGS_B, H_PLD_START_SHIRT_B } from "../all/startItems";
@@ -16,6 +17,11 @@ buildRaceClassPair({
 	EquipSkills: [std.EquipSkills.Maces2H],
 });
 
+const DEFAULT_GOSSIP = buildGossip({AddClassTrainer: {ClassMask: ClassMask.PALADIN,
+	ClassText: "The light itself harms us for what we are, yet we do not forsake it.  It is we who are forsaken by the world, we who are cast into the shadows...  But we will hold steadfast to the light through every trial.$b$bWe will not forsake ourselves.",
+	NotClassText: "May you find light in the shadows, $c.",
+}});
+
 buildNpc({
 	Tag: 'ud-pld-trainer-start',
 	CopyFrom: 15280,
@@ -25,10 +31,8 @@ buildNpc({
 	Spawn: {map:0,x:1847.642090,y:1625.090332,z:96.933983,o:2.610433},
 	Faction: FactionTemplateValues.UNDERCITY,
 
-	TrainerClassMask: ClassMask.PALADIN,
 	TrainerID: TrainerID.PaladinLow,
-	TrainerGossipClass: "The light itself harms us for what we are, yet we do not forsake it.  It is we who are forsaken by the world, we who are cast into the shadows...  But we will hold steadfast to the light through every trial.$b$bWe will not forsake ourselves.",
-	TrainerGossipNotClass: "May you find light in the shadows, $c.",
+	Gossip: DEFAULT_GOSSIP,
 
 	BakedNpc: "udPldTrainer0",
 	BakedNpcSound: NpcSoundIDs.UndeadMaleWarrior,
@@ -45,10 +49,8 @@ buildNpc({
 	Spawn: {map:0,x:2263.048340,y:249.268417,z:41.114834,o:5.679369},
 	Faction: FactionTemplateValues.UNDERCITY,
 
-	TrainerClassMask: ClassMask.PALADIN,
 	TrainerID: TrainerID.PaladinHorde,
-	TrainerGossipClass: "The light itself harms us for what we are, yet we do not forsake it.  It is we who are forsaken by the world, we who are cast into the shadows...  But we will hold steadfast to the light through every trial.$b$bWe will not forsake ourselves.",
-	TrainerGossipNotClass: "May you find light in the shadows, $c.",
+	Gossip: DEFAULT_GOSSIP,
 
 	GuardGossipOrigin: 3354,
 	GuardGossipOption: 'Paladin',
@@ -70,10 +72,11 @@ buildNpc({
 	Spawn: {map:0,x:1771.190674,y:414.072906,z:-57.197552,o:0.772366},
 	Faction: FactionTemplateValues.UNDERCITY,
 
-	TrainerClassMask: ClassMask.PALADIN,
 	TrainerID: TrainerID.PaladinHorde,
-	TrainerGossipClass: "For years, I believed that I could never atone for failing to protect my order.  My life...  But I realize now, that the light has not forsaken me.  Has not forsaken us.$b$bThe light harms us by its very nature, yet it still cradles us in its protection all the same.$b$bI would show you the way, if you require it of me.  Our faith will never again be shaken, no matter our path.  No matter our future.  This I vow.",
-	TrainerGossipNotClass: "For years, I believed that I could never atone for failing to protect my order.  My life...  But I realize now, $c, that the light has not forsaken me.  Has not forsaken us.$b$bThe light harms us by its very nature, yet it still cradles us in its protection all the same.$b$bYou may not be a paladin, but I hope you can find your own light, my friend.",
+	Gossip: buildGossip({AddClassTrainer: {ClassMask: ClassMask.PALADIN,
+		ClassText: "For years, I believed that I could never atone for failing to protect my order.  My life...  But I realize now, that the light has not forsaken me.  Has not forsaken us.$b$bThe light harms us by its very nature, yet it still cradles us in its protection all the same.$b$bI would show you the way, if you require it of me.  Our faith will never again be shaken, no matter our path.  No matter our future.  This I vow.",
+		NotClassText: "For years, I believed that I could never atone for failing to protect my order.  My life...  But I realize now, $c, that the light has not forsaken me.  Has not forsaken us.$b$bThe light harms us by its very nature, yet it still cradles us in its protection all the same.$b$bYou may not be a paladin, but I hope you can find your own light, my friend.",
+	}}),
 
 	GuardGossipPoiName: "Undercity Paladin Trainers",
 	InjectGossip: [{
@@ -100,10 +103,8 @@ buildNpc({
 	Spawn: {map:0,x:1784.428711,y:418.360748,z:-57.197601,o:3.136662},
 	Faction: FactionTemplateValues.UNDERCITY,
 
-	TrainerClassMask: ClassMask.PALADIN,
 	TrainerID: TrainerID.PaladinHorde,
-	TrainerGossipClass: "The light itself harms us for what we are, yet we do not forsake it.  It is we who are forsaken by the world, we who are cast into the shadows...  But we will hold steadfast to the light through every trial.$b$bWe will not forsake ourselves.",
-	TrainerGossipNotClass: "May you find light in the shadows, $c.",
+	Gossip: DEFAULT_GOSSIP,
 
 	BakedNpc: "udPldTrainer3",
 	BakedNpcSound: NpcSoundIDs.UndeadFemaleWarrior,
@@ -120,10 +121,8 @@ buildNpc({
 	Spawn: {map:0,x:1776.015015,y:427.404236,z:-57.197601,o:4.707441},
 	Faction: FactionTemplateValues.UNDERCITY,
 
-	TrainerClassMask: ClassMask.PALADIN,
 	TrainerID: TrainerID.PaladinHorde,
-	TrainerGossipClass: "The light itself harms us for what we are, yet we do not forsake it.  It is we who are forsaken by the world, we who are cast into the shadows...  But we will hold steadfast to the light through every trial.$b$bWe will not forsake ourselves.",
-	TrainerGossipNotClass: "May you find light in the shadows, $c.",
+	Gossip: DEFAULT_GOSSIP,
 
 	BakedNpc: "udPldTrainer2",
 	BakedNpcSound: NpcSoundIDs.UndeadMaleWarrior,

@@ -51,7 +51,7 @@ export declare type GossipBuilder = {
     SimpleText?: string,
     SimpleClassText?: {ClassMask: number, ClassText: string, NotClassText: string},
 
-    AddClassTrainer?: {ClassMask: number},
+    AddClassTrainer?: {ClassMask: number, ClassText?: string, NotClassText?: string},
 }
 
 export declare type GossipInjector = {
@@ -70,16 +70,6 @@ export function buildGossip(g: GossipBuilder, pois?: number[]): number {
     if (g.SimpleText !== undefined) g.Texts.push({
         Texts: [{Text: g.SimpleText}],
     });
-    if (g.SimpleClassText !== undefined) {
-        g.Texts.push({
-            Texts: [{Text: g.SimpleClassText.ClassText}],
-            ClassConditions: [{ClassMask: g.SimpleClassText.ClassMask}],
-        });
-        g.Texts.push({
-            Texts: [{Text: g.SimpleClassText.NotClassText}],
-            ClassConditions: [{ClassMask: g.SimpleClassText.ClassMask, Negate: true}],
-        });
-    }
     if (g.AddClassTrainer !== undefined) {
         g.Options.push({
             Icon: 3, Type: 5, Flag: 16, Menu: 0,
@@ -93,6 +83,19 @@ export function buildGossip(g: GossipBuilder, pois?: number[]): number {
         g.Options.push({
             Icon: 0, Text: 33762, Type: 20, Flag: 1, Menu: 10371,
             ClassConditions: [{ClassMask: g.AddClassTrainer.ClassMask}],
+        });
+        if (g.AddClassTrainer.ClassText !== undefined && g.AddClassTrainer.NotClassText !== undefined && g.SimpleClassText === undefined) {
+            g.SimpleClassText = {ClassMask: g.AddClassTrainer.ClassMask, ClassText: g.AddClassTrainer.ClassText, NotClassText: g.AddClassTrainer.NotClassText};
+        }
+    }
+    if (g.SimpleClassText !== undefined) {
+        g.Texts.push({
+            Texts: [{Text: g.SimpleClassText.ClassText}],
+            ClassConditions: [{ClassMask: g.SimpleClassText.ClassMask}],
+        });
+        g.Texts.push({
+            Texts: [{Text: g.SimpleClassText.NotClassText}],
+            ClassConditions: [{ClassMask: g.SimpleClassText.ClassMask, Negate: true}],
         });
     }
 
