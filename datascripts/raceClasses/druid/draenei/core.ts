@@ -2,9 +2,8 @@ import { ClassIDs } from "wow/wotlk/std/Class/ClassIDs";
 import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { FactionTemplateValues } from "wow/wotlk/std/Faction/FactionTemplates";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
-import { ABOM_GOSSIP_CLASS_TRAINERS } from "../../../classicFixes/undercityAbomGossipFix";
 import { TrainerID, NpcSoundIDs, AddonBytes2IDs } from "../../../commonIds";
-import { buildGossip, logCreatureGossip } from "../../../gossipBuilder";
+import { buildGossip } from "../../../gossipBuilder";
 import { buildItem } from "../../../itemBuilder";
 import { buildNpc } from "../../../npcBuilder";
 import { buildRaceClassPair } from "../../../raceClassBuilder";
@@ -70,7 +69,7 @@ buildNpc({
 	GuardGossipOrigin: 8137,
 	GuardGossipOption: 'Druid',
 	GuardGossipPoiName: 'Xenobiologist Saanii',
-	GuardGossipText: "Druid? Oh, you must be looking for Xenobiologist Saanii. She spends most of her time awaiting test results near the general good trader, in the south of Azure Watch.",
+	GuardGossipText: "Druid? Oh, you must be looking for Xenobiologist Saanii. She spends most of her time awaiting test results near the general goods trader, in the south of Azure Watch.",
 
 	BakedNpc: "drDruMid",
 	BakedNpcSound: NpcSoundIDs.DraeneiFemaleStandard,

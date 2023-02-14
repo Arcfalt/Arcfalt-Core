@@ -6,6 +6,4 @@ buildRaceClassPair({
 	Class: ClassIDs.DRUID,
 	Race: RaceIDs.ORC,
 	EquipCopyFromRace: RaceIDs.TAUREN,
-	SpecialRacial: 33697,
-	AppendRacial: true,
 })
