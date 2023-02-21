@@ -17,7 +17,7 @@ buildRaceClassPair({
 
 const DEFAULT_GOSSIP = buildGossip({AddClassTrainer: {ClassMask: ClassMask.ROGUE,
 	ClassText: "Greetings, young rogue.  What do you seek?",
-	NotClassText: "You don't appear ready to blend in to the shadows.  Try seeking out a $c trainer.",
+	NotClassText: "You don't appear ready to blend into the shadows.  Try seeking out a $c trainer.",
 }});
 
 buildNpc({
