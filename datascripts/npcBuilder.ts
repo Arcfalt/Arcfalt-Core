@@ -52,6 +52,7 @@ export declare type NpcBuilder = {
 	EquipOffHand?: number,
 	EquipRanged?: number,
 	AppendExistingSpawn?: boolean,
+	ClearExistingSpawns?: boolean,
 
 	AddonBytes1?: number,
 	AddonBytes2?: number,
@@ -134,6 +135,11 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	let poi: number | undefined = undefined;
 	if (c.GuardGossipPoiName !== undefined) {
 		poi = std.IDs.points_of_interest.dynamicId();
+	}
+	if (c.ClearExistingSpawns) {
+		npc.Spawns.forEach(value => {
+			value.delete();
+		})
 	}
 	if (c.Spawn !== undefined || c.AppendExistingSpawn !== undefined) {
 		let spawns: CreatureInstance[] | undefined = undefined;
