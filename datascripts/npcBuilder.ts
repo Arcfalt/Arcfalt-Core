@@ -93,9 +93,19 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	if (c.Subname !== undefined) npc.Subname.enGB.set(c.Subname);
 	if (c.Type !== undefined) npc.Type.set(c.Type);
 
+	let eqMain = c.EquipMainHand;
+	let eqOff = c.EquipOffHand;
+	let eqRange = c.EquipRanged;
+
 	if (c.Faction !== undefined) npc.FactionTemplate.set(c.Faction);
 	if (c.Model !== undefined) npc.Models.clearAll().Models.addIds(c.Model);
-	else if (c.BakedNpc !== undefined) npc.Models.clearAll().Models.addIds(buildCreatureDisplayFromFile(c.BakedNpc, c.BakedNpcSound));
+	else if (c.BakedNpc !== undefined) {
+		let af = getArcCreatureFromFile(c.BakedNpc);
+		if (eqMain === undefined && af.weaponMainHandId) eqMain = af.weaponMainHandId;
+		if (eqOff === undefined && af.weaponMainHandId) eqOff = af.weaponMainHandId;
+		if (eqRange === undefined && af.weaponMainHandId) eqRange = af.weaponMainHandId;
+		npc.Models.clearAll().Models.addIds(buildCreatureDisplayFromArc(af, c.BakedNpcSound));
+	}
 	else if (c.DressNpc !== undefined) npc.Models.clearAll().Models.addIds(buildDressNpc(c.DressNpc).ID);
 	else if (c.BuildNpc !== undefined) npc.Models.clearAll().Models.addIds(buildCreatureDisplay(c.BuildNpc));
 	if (c.Level !== undefined) npc.Level.set(c.Level, c.Level);
@@ -121,14 +131,14 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	}
 
 	let setEquip: boolean = false;
-	if (c.EquipMainHand !== undefined || c.EquipOffHand !== undefined || c.EquipRanged !== undefined) {
+	if (eqMain !== undefined || eqOff !== undefined || eqRange !== undefined) {
 		if (c.AppendExistingSpawn && npc.Weapons.length > 0) {
 			let weps = npc.Weapons.getIndex(0);
-			if (c.EquipMainHand) weps.RightHand.set(c.EquipMainHand);
-			if (c.EquipOffHand) weps.LeftHand.set(c.EquipOffHand);
-			if (c.EquipRanged) weps.Ranged.set(c.EquipRanged);
+			if (eqMain) weps.RightHand.set(eqMain);
+			if (eqOff) weps.LeftHand.set(eqOff);
+			if (eqRange) weps.Ranged.set(eqRange);
 		}
-		else npc.Weapons.add(c.EquipMainHand, c.EquipOffHand, c.EquipRanged);
+		else npc.Weapons.add(eqMain, eqOff, eqRange);
 		setEquip = true;
 	}
 
@@ -151,7 +161,7 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 				if (i == 0 && poi !== undefined) std.SQL.points_of_interest.add(poi, { PositionX: spawn.Position.X.get(), PositionY: spawn.Position.Y.get(), Icon: 7, Flags: 99, Importance: 0, Name: c.GuardGossipPoiName });
 				if (setEquip) {
 					spawn.EquipmentID.set(1);
-					if (c.EquipMainHand === undefined && c.EquipOffHand === undefined && c.EquipRanged !== undefined && c.AddonBytes2 === undefined) spawn.AddonBytes2.set(2);
+					if (eqMain === undefined && eqOff === undefined && eqRange !== undefined && c.AddonBytes2 === undefined) spawn.AddonBytes2.set(2);
 				}
 				if (c.AddonBytes1 !== undefined) spawn.AddonBytes1.set(c.AddonBytes1);
 				if (c.AddonBytes2 !== undefined) spawn.AddonBytes2.set(c.AddonBytes2);
@@ -314,10 +324,27 @@ export declare type CreatureDisplayBuilder = {
 	displayIdOtherGenderOverride?: number,
 };
 
-export function getCharDisplayBuilderFromFile(fileName: string) : CreatureDisplayBuilder {
+export declare type ArcCreatureFormat = {
+	raceId?: number,
+	genderId?: number,
+	skinId?: number,
+	faceId?: number,
+	hairStyleId?: number,
+	hairColorId?: number,
+	facialHairId?: number,
+	itemDisplay?: number[],
+	bakeName?: string,
+	bakeResolution?: number,
+	soundId?: number,
+	weaponMainHandId?: number,
+	weaponOffHandId?: number,
+	weaponRangedId?: number,
+}
+
+export function getArcCreatureFromFile(fileName: string) : ArcCreatureFormat {
 	let p = path.join(__dirname, '..', '..', 'charDatas', (fileName + '.json'));
 	let dat = fs.readFileSync(p, 'utf-8');
-	let o : CreatureDisplayBuilder = JSON.parse(dat);
+	let o : ArcCreatureFormat = JSON.parse(dat);
 	return o;
 }
 
@@ -357,8 +384,41 @@ export function buildCreatureDisplay(o: CreatureDisplayBuilder) : number {
 	return d.ID.get();
 }
 
-export function buildCreatureDisplayFromFile(o: string, npcSound?: number) : number {
-	let builder = getCharDisplayBuilderFromFile(o);
-	if (npcSound != undefined) builder.npcSoundOverride = npcSound;
+export function buildCreatureDisplayFromArc(o: ArcCreatureFormat, npcSound?: number) : number {
+	let builder : CreatureDisplayBuilder = o;
+	if (npcSound !== undefined) builder.npcSoundOverride = npcSound;
+	else if (o.soundId !== undefined) builder.npcSoundOverride = o.soundId;
 	return buildCreatureDisplay(builder);
+}
+
+export function exportNewCharFromCreature(target: number, fileName: string, index?: number) {
+	let c = std.CreatureTemplates.load(target);
+	let i = 0;
+	if (index !== undefined) i = index;
+	let did = c.Models.get(i).get();
+	let d = std.CreatureDisplayInfo.load(did);
+	let edid = d.ExtendedDisplay.get();
+	let e = std.DBC.CreatureDisplayInfoExtra.query({ID: edid});
+	let a : ArcCreatureFormat = {
+		raceId: e.DisplayRaceID.get(),
+		genderId: e.DisplaySexID.get(),
+		skinId: e.SkinID.get(),
+		faceId: e.FaceID.get(),
+		hairStyleId: e.HairStyleID.get(),
+		hairColorId: e.HairColorID.get(),
+		facialHairId: e.FacialHairID.get(),
+		itemDisplay: e.NPCItemDisplay.get(),
+		bakeName: fileName,
+		bakeResolution: 0,
+		soundId: d.NPCSound.get(),
+	};
+	if (c.Weapons.length > 0) {
+		let w = c.Weapons.getIndex(0);
+		a.weaponMainHandId = w.RightHand.get();
+		a.weaponOffHandId = w.LeftHand.get();
+		a.weaponRangedId = w.Ranged.get();
+	}
+	let s = JSON.stringify(a);
+	let p = path.join(__dirname, '..', '..', 'charDatas', (fileName + '.json'));
+	fs.writeFileSync(p, s, 'utf-8');
 }
