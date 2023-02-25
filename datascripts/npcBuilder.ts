@@ -102,8 +102,8 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 	else if (c.BakedNpc !== undefined) {
 		let af = getArcCreatureFromFile(c.BakedNpc);
 		if (eqMain === undefined && af.weaponMainHandId) eqMain = af.weaponMainHandId;
-		if (eqOff === undefined && af.weaponMainHandId) eqOff = af.weaponMainHandId;
-		if (eqRange === undefined && af.weaponMainHandId) eqRange = af.weaponMainHandId;
+		if (eqOff === undefined && af.weaponOffHandId) eqOff = af.weaponOffHandId;
+		if (eqRange === undefined && af.weaponRangedId) eqRange = af.weaponRangedId;
 		npc.Models.clearAll().Models.addIds(buildCreatureDisplayFromArc(af, c.BakedNpcSound));
 	}
 	else if (c.DressNpc !== undefined) npc.Models.clearAll().Models.addIds(buildDressNpc(c.DressNpc).ID);
