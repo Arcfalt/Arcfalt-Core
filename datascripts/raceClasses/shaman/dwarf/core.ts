@@ -1,11 +1,11 @@
-import { std } from "wow/wotlk";
 import { ClassIDs } from "wow/wotlk/std/Class/ClassIDs";
 import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { CreatureType } from "wow/wotlk/std/Creature/CreatureType";
 import { UnitClass } from "wow/wotlk/std/Creature/UnitClass";
 import { FactionTemplateValues } from "wow/wotlk/std/Faction/FactionTemplates";
 import { RaceIDs } from "wow/wotlk/std/Race/RaceType";
-import { TrainerID, NpcSoundIDs, AddonBytes1IDs } from "../../../commonIds";
+import { TrainerID } from "../../../commonIds";
+import { buildGossip } from "../../../gossipBuilder";
 import { appendNpc, buildNpc } from "../../../npcBuilder";
 import { appendQuest } from "../../../questBuilder";
 import { buildRaceClassPair } from "../../../raceClassBuilder";
@@ -15,50 +15,44 @@ buildRaceClassPair({
 	Class: ClassIDs.SHAMAN,
 	Race: RaceIDs.DWARF,
 	EquipIdList: [36, 2362, A_SHA_START_SHIRT.ID, A_SHA_START_LEGS.ID],
-})
+});
+
+const DEFAULT_GOSSIP = buildGossip({AddClassTrainer: {ClassMask: ClassMask.SHAMAN,
+	ClassText: "The spirit of stone favors you.  What will you ask of it?",
+	NotClassText: "The spirit of stone is fickle and best left out of untrained hands.  My apologies, $c, but I have no need of yours.",
+}});
 
 buildNpc({
-	Tag: 'dw-sha-trainer-northshire',
+	Tag: 'dw-sha-trainer-start',
 	CopyFrom: 17089,
 
-	Name: 'Demme Dualcrag',
+	Name: 'Tara Hammerstorm',
 	Subname: 'Shaman Trainer',
-	Spawn: {map:0,x:-6056.049805,y:382.597992,z:392.760010,o:2.967060},
+	Spawn: {map:0,x:-6068.460938,y:370.631317,z:393.597412,o:0.744833},
 	Faction: FactionTemplateValues.IRONFORGE,
 
-	TrainerClassMask: ClassMask.SHAMAN,
 	TrainerID: TrainerID.ShamanLow,
-	TrainerGossipClass: "Welcome, fellow friend of the stone.  Spirits of land and earth keep ye safe.",
-	TrainerGossipNotClass: "Ye may not be attuned to the spirits of the land, $c, but stone keep ye safe.",
-
+	Gossip: DEFAULT_GOSSIP,
 	BakedNpc: "dwShaTrainer0",
-	BakedNpcSound: NpcSoundIDs.DwarfFemaleGuard,
-	AddonBytes1: AddonBytes1IDs.SitMediumChair,
 });
 
 buildNpc({
-	Tag: 'dw-sha-trainer-goldshire',
+	Tag: 'dw-sha-trainer-mid',
 	CopyFrom: 17212,
 
-	Name: 'Sagremonn Icepatch',
+	Name: 'Halbin Frosthammer',
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:-5582.678711,y:-542.079468,z:403.614899,o:1.946483},
 	Faction: FactionTemplateValues.IRONFORGE,
 
-	TrainerClassMask: ClassMask.SHAMAN,
 	TrainerID: TrainerID.Shaman,
-	TrainerGossipClass: "Welcome, fellow friend of the stone.  Spirits of land and earth keep ye safe.",
-	TrainerGossipNotClass: "Ye may not be attuned to the spirits of the land, $c, but stone keep ye safe.",
+	Gossip: DEFAULT_GOSSIP,
+	BakedNpc: "dwShaTrainer1",
 
 	GuardGossipOrigin: 3545,
 	GuardGossipOption: 'Shaman',
-	GuardGossipPoiName: 'Sagremonn Icepatch',
-	GuardGossipText: "Ye can probably find Sagremonn Icepatch throwin' down a pint or three in the Thunderbrew Distillery.  Ye could join him and see if he'll teach ye how ta talk to the land.",
-
-	BakedNpc: "dwShaTrainer1",
-	BakedNpcSound: NpcSoundIDs.DwarfMaleStandard,
-	EquipMainHand: 4090,
-	EquipOffHand: 18425,
+	GuardGossipPoiName: 'Halbin Frosthammer',
+	GuardGossipText: "Ye can probably find Halbin Frosthammer throwin' down a pint or three in the Thunderbrew Distillery.  Ye could join him and see if he'll teach ye his spiritual ways.",
 });
 
 appendNpc(23127, {
@@ -67,9 +61,6 @@ appendNpc(23127, {
 	Subname: "Shaman Trainer",
 	Faction: FactionTemplateValues.IRONFORGE,
 	BakedNpc: "dwShaIronforge1",
-	BakedNpcSound: NpcSoundIDs.DwarfFemaleYoung,
-	EquipMainHand: 15236,
-	EquipOffHand: 15236,
 	Level: 60,
 	AppendExistingSpawn: true,
 
@@ -82,14 +73,13 @@ appendNpc(23127, {
 appendNpc(35073, {
 	Tag: 'dw-sha-other-replacer',
 	Name: "Tuinagg Fullflight",
-	Subname: "Elder Stormseer",
+	Subname: "Shaman Trainer",
 	Faction: FactionTemplateValues.IRONFORGE,
 	BakedNpc: "dwShaIronforge2",
-	BakedNpcSound: NpcSoundIDs.DwarfMaleGrim,
-	EquipMainHand: 7954,
-	EquipOffHand: 3763,
 	Level: 50,
 	AppendExistingSpawn: true,
+	TrainerID: TrainerID.Shaman,
+	Gossip: DEFAULT_GOSSIP,
 })
 
 appendQuest(14111, {
@@ -109,12 +99,7 @@ buildNpc({
 	Class: UnitClass.PALADIN,
 	AnimateSwim: true,
 
-	TrainerClassMask: ClassMask.SHAMAN,
 	TrainerID: TrainerID.Shaman,
-	TrainerGossipClass: "Welcome, fellow friend of the stone.  Spirits of land and earth keep ye safe.",
-	TrainerGossipNotClass: "Ye may not be attuned to the spirits of the land, $c, but stone keep ye safe.",
-
+	Gossip: DEFAULT_GOSSIP,
 	BakedNpc: "dwShaIronforge3",
-	BakedNpcSound: NpcSoundIDs.DwarfMaleStandard,
-	EquipMainHand: 2030,
 });
