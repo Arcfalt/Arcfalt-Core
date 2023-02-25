@@ -26,7 +26,7 @@ buildNpc({
 	Tag: 'dw-sha-trainer-start',
 	CopyFrom: 17089,
 
-	Name: 'Tara Hammerstorm',
+	Name: 'Teo Hammerstorm',
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:-6068.460938,y:370.631317,z:393.597412,o:0.744833},
 	Faction: FactionTemplateValues.IRONFORGE,
