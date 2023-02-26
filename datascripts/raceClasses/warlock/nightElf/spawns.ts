@@ -95,6 +95,7 @@ export const NE_WLK_DARNASSUS_SIDEKICK = buildNpc({
 	CopyFrom: 6382,
 
 	Name: 'Veneta Shadowfeather',
+	Subname: 'Warlock Trainer',
 	Spawn: {map:1,x:10099.381836,y:2687.410400,z:1317.588257,o:6.206592},
 	Faction: FactionTemplateValues.DARNASSUS,
 
