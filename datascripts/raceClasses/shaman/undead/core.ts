@@ -28,7 +28,7 @@ buildRaceClassPair({
 });
 
 const DEFAULT_GOSSIP = buildGossip({AddClassTrainer: {ClassMask: ClassMask.SHAMAN,
-	ClassText: "The spirits have guided you to me.  This land calls out for aid, the elements are in decay, the spirits cry in anger and despair...$B$BIt will take time, but we must do what we can.  Have you come to learn?",
+	ClassText: "The spirits have guided you to me.  This land calls out for aid, the elements are in decay, the spirits cry in anger and despair...  It is too much for any one witch doctor to handle alone.$B$BIt will take time, but we must do what we can.  Together.",
 	NotClassText: "May the spirits be with you, $c.",
 }});
 
@@ -36,7 +36,7 @@ buildNpc({
 	Tag: 'ud-sha-trainer-start',
 	CopyFrom: 3157,
 
-	Name: 'Trokdi Barrenstorm',
+	Name: 'Pell Rabidglare',
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:1857.051270,y:1568.240967,z:99.080490,o:1.213090},
 	Faction: FactionTemplateValues.UNDERCITY,
@@ -45,7 +45,7 @@ buildNpc({
 	Gossip: DEFAULT_GOSSIP,
 
 	BakedNpc: "udShaTrainer0",
-	BakedNpcSound: NpcSoundIDs.OrcMaleStandard,
+	BakedNpcSound: NpcSoundIDs.UndeadMaleDark,
 	EquipMainHand: 3443,
 });
 
@@ -53,7 +53,7 @@ buildNpc({
 	Tag: 'ud-sha-trainer-mid',
 	CopyFrom: 3173,
 
-	Name: 'Sahtu Sourheart',
+	Name: 'Kimberley Payton',
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:2368.704834,y:438.374390,z:33.481468,o:4.579060},
 	Faction: FactionTemplateValues.UNDERCITY,
@@ -63,11 +63,11 @@ buildNpc({
 
 	GuardGossipOrigin: 3354,
 	GuardGossipOption: 'Shaman',
-	GuardGossipPoiName: 'Sahtu Sourheart',
-	GuardGossipText: "You'll find Sahtu Sourheart in the graveyard, supposedly talking to the spirits of the dead.",
+	GuardGossipPoiName: 'Kimberley Payton',
+	GuardGossipText: "You'll find Kimberley Payton in the graveyard, supposedly talking to the spirits of the dead.  Gotta be a lot of those around.",
 
 	BakedNpc: "udShaTrainer1",
-	BakedNpcSound: NpcSoundIDs.OrcFemaleShaman,
+	BakedNpcSound: NpcSoundIDs.UndeadFemaleMagic,
 	EquipMainHand: 2844,
 });
 
@@ -75,7 +75,7 @@ buildNpc({
 	Tag: 'ud-sha-trainer-main',
 	CopyFrom: 3344,
 
-	Name: 'Mogg Clansmoke',
+	Name: 'Cristian Windmeat',
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:1548.031372,y:332.955963,z:-62.138470,o:0.471114},
 	Faction: FactionTemplateValues.UNDERCITY,
@@ -87,16 +87,16 @@ buildNpc({
 	InjectGossip: [{
 		Target: ABOM_GOSSIP_CLASS_TRAINERS,
 		Option: "Shaman",
-		Gossip: "Shamans come visit to read some books.  Learn about spirits.  We hope they in high spirits!  You find them on inner ring of The Apothecarium.",
+		Gossip: "Shamans read some books in library about helping dead people.  Learn about spirits.  We hope they in high spirits!  You find them on inner ring of The Apothecarium.",
 	}, {
 		Target: 10768,
 		Option: "Shaman",
-		Gossip: "You'll find some shamans on inner ring of The Apothecarium, in the small library there.  Looking for ways to help the spirits here.  Hah!  Going to be a lot of spirits to help here, I'd say.",
+		Gossip: "You'll find some witch doctors on inner ring of The Apothecarium, in the small library there.  Looking for ways to help the spirits here.  Hah!  Going to be a lot of spirits, I'd say.",
 	}],
 
 	BakedNpc: "udShaTrainer3",
-	BakedNpcSound: NpcSoundIDs.OrcMaleShady,
-	EquipMainHand: 17743,
+	BakedNpcSound: NpcSoundIDs.UndeadMaleStandard,
+	EquipMainHand: 791,
 	AddonBytes2: AddonBytes2IDs.UNARMED,
 });
 
@@ -104,7 +104,7 @@ buildNpc({
 	Tag: 'ud-sha-trainer-0',
 	CopyFrom: 13417,
 
-	Name: "Gin'zacei",
+	Name: "Noa Ephraim",
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:1558.131104,y:331.948395,z:-62.138470,o:2.659760},
 	Faction: FactionTemplateValues.UNDERCITY,
@@ -113,14 +113,14 @@ buildNpc({
 	Gossip: DEFAULT_GOSSIP,
 
 	BakedNpc: "udShaTrainer4",
-	BakedNpcSound: NpcSoundIDs.TrollFemaleLaidBack,
+	BakedNpcSound: NpcSoundIDs.UndeadFemaleStandard,
 });
 
 buildNpc({
 	Tag: 'ud-sha-trainer-1',
 	CopyFrom: 3403,
 
-	Name: 'Numees Fourhoof',
+	Name: 'Aloyse Hartwalker',
 	Subname: 'Shaman Trainer',
 	Spawn: {map:0,x:1552.876953,y:327.455261,z:-62.138470,o:4.411201},
 	Faction: FactionTemplateValues.UNDERCITY,
@@ -129,5 +129,5 @@ buildNpc({
 	Gossip: DEFAULT_GOSSIP,
 
 	BakedNpc: "udShaTrainer5",
-	BakedNpcSound: NpcSoundIDs.TaurenFemaleShaman,
+	BakedNpcSound: NpcSoundIDs.UndeadFemaleMagic,
 });
