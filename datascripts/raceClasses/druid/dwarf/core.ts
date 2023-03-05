@@ -19,7 +19,7 @@ const DEFAULT_GOSSIP = buildGossip({AddClassTrainer: {ClassMask: ClassMask.DRUID
 	NotClassText: "May the wilds keep you safe, $c.",
 }});
 
-buildNpc({
+export const DWARF_DRUID_COLDRIDGE = buildNpc({
 	Tag: 'dw-dru-trainer-coldridge',
 	CopyFrom: 3597,
 
@@ -33,7 +33,7 @@ buildNpc({
 	BakedNpc: "dwDruTrainer1",
 });
 
-buildNpc({
+export const DWARF_DRUID_KHARANOS = buildNpc({
 	Tag: 'dw-dru-trainer-kharanos',
 	CopyFrom: 3602,
 
@@ -52,7 +52,7 @@ buildNpc({
 	GuardGossipText: "Ach, a Druid?  Yer in luck, one of the wildhammer naturalists, Jedon Boulderbranch, has been staying in the Thunderbrew Distillery.  Uncommon to see them leave the roost too often.",
 });
 
-buildNpc({
+export const DWARF_DRUID_IRONFORGE_1 = buildNpc({
 	Tag: 'dw-dru-trainer-if1',
 	CopyFrom: 5505,
 
@@ -71,7 +71,7 @@ buildNpc({
 	GuardGossipText: "Lucky fer ye, the League of Explorers recently called in some naturalists from our allies at Aerie Peak to assist with a wee little project.  Ye can find them lodging in the Hall of Explorers, hopefully they can assist ye if they aren't too busy!",
 });
 
-buildNpc({
+export const DWARF_DRUID_IRONFORGE_2 = buildNpc({
 	Tag: 'dw-dru-trainer-if2',
 	CopyFrom: 5506,
 
@@ -85,7 +85,7 @@ buildNpc({
 	BakedNpc: "ifDru2",
 });
 
-buildNpc({
+export const DWARF_DRUID_IRONFORGE_3 = buildNpc({
 	Tag: 'dw-dru-trainer-if3',
 	CopyFrom: 5504,
 

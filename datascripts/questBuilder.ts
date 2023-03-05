@@ -2,6 +2,7 @@ import { MaskMode } from "wow/data/cell/cells/MaskCell";
 import { std } from "wow/wotlk";
 import { ClassMask } from "wow/wotlk/std/Class/ClassRegistry";
 import { Quest } from "wow/wotlk/std/Quest/Quest";
+import { RaceMask } from "wow/wotlk/std/Race/RaceType";
 import { MODNAME } from "./datascripts";
 import { buildItem, ItemBuilder } from "./itemBuilder";
 
@@ -10,6 +11,7 @@ export declare type QuestBuilder = {
 	CopyFrom?: number,
 
     StartNpc?: number,
+	StartNpcs?: number[],
 	EndNpc?: number,
 
 	AddEndPoi?: boolean,
@@ -22,6 +24,8 @@ export declare type QuestBuilder = {
 
 	ClassMask?: ClassMask,
 	ClassMaskMode?: MaskMode,
+	RaceMask?: RaceMask,
+	RaceMaskMode?: MaskMode,
 
 	Title?: string,
 	PickupText?: string,
@@ -31,6 +35,7 @@ export declare type QuestBuilder = {
 	ReplaceText?: {from: string | RegExp, to: string},
 
 	ExclusiveGroup?: number,
+	BreadcrumbFor?: number,
 
 	ClearItemObjectives?: boolean,
 	DeliveryItem?: ItemBuilder,
@@ -56,6 +61,11 @@ export function appendQuest(target: number | Quest, b: QuestBuilder) : Quest {
 	if (b.ObjectiveText) q.ObjectiveText.set({enGB: b.ObjectiveText});
 	if (b.IncompleteText) q.IncompleteText.set({enGB: b.IncompleteText});
 	if (b.StartNpc) q.Questgiver.addCreatureStarter(b.StartNpc);
+	if (b.StartNpcs) {
+		b.StartNpcs.forEach(element => {
+			q.Questgiver.addCreatureStarter(element);
+		});
+	}
 	if (b.EndNpc) q.Questgiver.addCreatureEnder(b.EndNpc, b.AddEndPoi);
 
 	if (b.PoiWorldMapArea) q.POIs.getIndex(0).WorldMapArea.set(b.PoiWorldMapArea);
@@ -66,6 +76,7 @@ export function appendQuest(target: number | Quest, b: QuestBuilder) : Quest {
 	if (b.PoiObjectiveIndex) q.POIs.getIndex(0).ObjectiveIndex.set(b.PoiObjectiveIndex);
 
 	if (b.ExclusiveGroup) q.ExclusiveGroup.set(b.ExclusiveGroup);
+	if (b.BreadcrumbFor) q.BreadcrumbForQuest.set(b.BreadcrumbFor);
 
 	if (b.ClearItemObjectives) q.Objectives.Item.clearAll();
 	if (b.DeliveryItem) {
@@ -77,6 +88,10 @@ export function appendQuest(target: number | Quest, b: QuestBuilder) : Quest {
 	if (b.ClassMask) {
 		q.ClassMask.clearAll();
 		q.ClassMask.set(b.ClassMask, b.ClassMaskMode);
+	}
+	if (b.RaceMask) {
+		q.RaceMask.clearAll();
+		q.RaceMask.set(b.RaceMask, b.RaceMaskMode);
 	}
 
 	if (b.ReplaceText){

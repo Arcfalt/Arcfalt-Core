@@ -19,7 +19,7 @@ const DEFAULT_GOSSIP = buildGossip({AddClassTrainer: {ClassMask: ClassMask.DRUID
 	NotClassText: "May you sow the seeds of your future harvest, $c.",
 }});
 
-buildNpc({
+export const HUMAN_DRUID_NORTHSHIRE = buildNpc({
 	Tag: 'hu-dru-trainer-northshire',
 	CopyFrom: 3597,
 
@@ -33,7 +33,7 @@ buildNpc({
 	BakedNpc: "huDruTrainer0",
 });
 
-buildNpc({
+export const HUMAN_DRUID_GOLDSHIRE = buildNpc({
 	Tag: 'hu-dru-trainer-goldshire',
 	CopyFrom: 3602,
 
@@ -52,7 +52,7 @@ buildNpc({
 	BakedNpc: "huDruTrainer1",
 });
 
-buildNpc({
+export const HUMAN_DRUID_STORMWIND = buildNpc({
 	Tag: 'hu-dru-trainer-sw',
 	CopyFrom: 4219,
 
