@@ -79,6 +79,7 @@ export const DWARF_DRUID_IRONFORGE_2 = buildNpc({
 	Subname: 'Druid Trainer',
 	Spawn: {map:0,x:-4702.763184,y:-1171.683716,z:505.269318,o:5.285773},
 	Faction: FactionTemplateValues.IRONFORGE,
+	Questgiver: true,
 
 	TrainerID: TrainerID.Druid,
 	Gossip: DEFAULT_GOSSIP,

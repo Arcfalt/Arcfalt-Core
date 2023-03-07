@@ -28,3 +28,18 @@ buildQuest({
     CompleteText: "I'm glad you found your way here today, young $c.  The time has come for you to take a large step into a much larger world.$b$bInside each of Cenarius' children is the call to serve nature.  Animals and plants are our friends as well as our charges.  We choose to devote our lives as preservers of balance for their sakes as well as our own.  Your first step into this world will be to learn of the ways of the bear, and to learn strength of body and heart.$b$bReady yourself!",
     BreadcrumbFor: 5921,
 });
+
+buildQuest({
+    Tag: "hu-dru-aqua-breadcrumb",
+    CopyFrom: 5923,
+    RaceMask: RaceMask.HUMAN,
+    StartNpc: HUMAN_DRUID_STORMWIND.ID,
+    AddEnd: {npc: 4217, area: WorldMapAreaIDs.Darnassis},
+    Title: "A Swimming Start",
+    PickupText: "$n!  It seems Mathrengyl Bearwalker is looking to further your training in the shapeshifting arts.  Apparently he is ready to teach a water based form.$b$bGo to the Cenarion Enclave of Darnassus, on the second floor of the building where the druids reside.",
+    CompleteText: "I'm glad you found your way here today, $c.  The time has come for further training.",
+    BreadcrumbFor: 26,
+    RewardNextQuest: 26,
+    ExclusiveGroup: 0,
+    MinLevel: 16,
+});

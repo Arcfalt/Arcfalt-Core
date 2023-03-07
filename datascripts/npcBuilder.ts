@@ -43,6 +43,8 @@ export declare type NpcBuilder = {
 	TrainerGossipNotClass?: string,
 	TrainerCustomTrainText?: string,
 
+	Questgiver?: boolean,
+
 	DressNpc?: DressNpcBuilder,
 	BuildNpc?: CreatureDisplayBuilder,
 	BakedNpc?: string,
@@ -191,6 +193,9 @@ export function appendNpc(target: number | CreatureTemplate, c: NpcBuilder): Cre
 		npc.NPCFlags.TRAINER.set(true);
 		npc.NPCFlags.CLASS_TRAINER.set(true);
 		npc.Trainer.set(c.TrainerID);
+	}
+	if (c.Questgiver !== undefined) {
+		npc.NPCFlags.QUEST_GIVER.set(c.Questgiver);
 	}
 
 	let useGossip = c.Gossip;

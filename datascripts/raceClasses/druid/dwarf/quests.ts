@@ -2,7 +2,7 @@ import { std } from "wow/wotlk";
 import { RaceMask } from "wow/wotlk/std/Race/RaceType";
 import { WorldMapAreaIDs } from "../../../commonIds";
 import { appendQuest, buildQuest } from "../../../questBuilder";
-import { DWARF_DRUID_IRONFORGE_1, DWARF_DRUID_IRONFORGE_2, DWARF_DRUID_KHARANOS } from "./core";
+import { DWARF_DRUID_IRONFORGE_1, DWARF_DRUID_IRONFORGE_2, DWARF_DRUID_IRONFORGE_3, DWARF_DRUID_KHARANOS } from "./core";
 
 // Bear form chain race mask allow
 std.Quests.load(5921).RaceMask.DWARF.set(1);
@@ -30,7 +30,21 @@ buildQuest({
     BreadcrumbFor: 5921,
 });
 
+// Aqua form chain starter
+buildQuest({
+    Tag: "dw-dru-aqua-breadcrumb",
+    CopyFrom: 5923,
+    RaceMask: RaceMask.DWARF | RaceMask.GNOME,
+    StartNpc: DWARF_DRUID_IRONFORGE_3.ID,
+    AddEnd: {npc: 4217, area: WorldMapAreaIDs.Darnassis},
+    Title: "A Swimming Start",
+    PickupText: "$n!  It seems Mathrengyl Bearwalker is looking to further your training in the shapeshifting arts.  Apparently he is ready to teach a water based form.$b$bGo to the Cenarion Enclave of Darnassus, on the second floor of the building where the druids reside.",
+    CompleteText: "I'm glad you found your way here today, $c.  The time has come for further training.",
+    BreadcrumbFor: 26,
+    RewardNextQuest: 26,
+    ExclusiveGroup: 0,
+    MinLevel: 16,
+});
+
 // Torwa Pathfinder starter
-appendQuest(9063, {
-    StartNpc: DWARF_DRUID_IRONFORGE_2.ID,
-})
+appendQuest(9063, {StartNpc: DWARF_DRUID_IRONFORGE_2.ID});

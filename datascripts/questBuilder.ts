@@ -14,6 +14,13 @@ export declare type QuestBuilder = {
 	StartNpcs?: number[],
 	EndNpc?: number,
 
+	Level?: {min: number, target: number, max: number},
+	QuestLevel?: number,
+	MinLevel?: number,
+	MaxLevel?: number,
+	SortId?: number,
+
+	AddEnd?: {npc: number, area?: number},
 	AddEndPoi?: boolean,
 	PoiWorldMapArea?: number,
 	PoiMap?: number,
@@ -36,6 +43,9 @@ export declare type QuestBuilder = {
 
 	ExclusiveGroup?: number,
 	BreadcrumbFor?: number,
+	PreviousQuest?: number,
+	NextQuest?: number,
+	RewardNextQuest?: number,
 
 	ClearItemObjectives?: boolean,
 	DeliveryItem?: ItemBuilder,
@@ -55,46 +65,64 @@ export function appendQuest(target: number | Quest, b: QuestBuilder) : Quest {
 	else {
 		q = target;
 	}
-	if (b.Title) q.Name.set({enGB: b.Title});
-	if (b.PickupText) q.PickupText.set({enGB: b.PickupText});
-	if (b.CompleteText) q.CompleteText.set({enGB: b.CompleteText});
-	if (b.ObjectiveText) q.ObjectiveText.set({enGB: b.ObjectiveText});
-	if (b.IncompleteText) q.IncompleteText.set({enGB: b.IncompleteText});
-	if (b.StartNpc) q.Questgiver.addCreatureStarter(b.StartNpc);
-	if (b.StartNpcs) {
+
+	if (b.AddEnd !== undefined) {
+		b.EndNpc = b.AddEnd.npc;
+		b.PoiWorldMapArea = b.AddEnd.area;
+	}
+
+	if (b.Title !== undefined) q.Name.set({enGB: b.Title});
+	if (b.PickupText !== undefined) q.PickupText.set({enGB: b.PickupText});
+	if (b.CompleteText !== undefined) q.CompleteText.set({enGB: b.CompleteText});
+	if (b.ObjectiveText !== undefined) q.ObjectiveText.set({enGB: b.ObjectiveText});
+	if (b.IncompleteText !== undefined) q.IncompleteText.set({enGB: b.IncompleteText});
+	if (b.StartNpc !== undefined) q.Questgiver.addCreatureStarter(b.StartNpc);
+	if (b.StartNpcs !== undefined) {
 		b.StartNpcs.forEach(element => {
 			q.Questgiver.addCreatureStarter(element);
 		});
 	}
-	if (b.EndNpc) q.Questgiver.addCreatureEnder(b.EndNpc, b.AddEndPoi);
+	if (b.EndNpc !== undefined) q.Questgiver.addCreatureEnder(b.EndNpc, b.AddEndPoi);
 
-	if (b.PoiWorldMapArea) q.POIs.getIndex(0).WorldMapArea.set(b.PoiWorldMapArea);
-	if (b.PoiMap) q.POIs.getIndex(0).Map.set(b.PoiMap);
-	if (b.PoiFlags) q.POIs.getIndex(0).Flags.set(b.PoiFlags);
-	if (b.PoiFloor) q.POIs.getIndex(0).Floor.set(b.PoiFloor);
-	if (b.PoiPriority) q.POIs.getIndex(0).Priority.set(b.PoiPriority);
-	if (b.PoiObjectiveIndex) q.POIs.getIndex(0).ObjectiveIndex.set(b.PoiObjectiveIndex);
+	if (b.Level !== undefined) {
+		q.Level.set(b.Level.min, b.Level.target, b.Level.max);
+	}
+	if (b.QuestLevel !== undefined) q.QuestLevel.set(b.QuestLevel);
+	if (b.MinLevel !== undefined) q.MinLevel.set(b.MinLevel);
+	if (b.MaxLevel !== undefined) q.MaxLevel.set(b.MaxLevel);
 
-	if (b.ExclusiveGroup) q.ExclusiveGroup.set(b.ExclusiveGroup);
-	if (b.BreadcrumbFor) q.BreadcrumbForQuest.set(b.BreadcrumbFor);
+	if(b.SortId !== undefined) q.AreaSort.set(b.SortId);
+
+	if (b.PoiWorldMapArea !== undefined) q.POIs.getIndex(0).WorldMapArea.set(b.PoiWorldMapArea);
+	if (b.PoiMap !== undefined) q.POIs.getIndex(0).Map.set(b.PoiMap);
+	if (b.PoiFlags !== undefined) q.POIs.getIndex(0).Flags.set(b.PoiFlags);
+	if (b.PoiFloor !== undefined) q.POIs.getIndex(0).Floor.set(b.PoiFloor);
+	if (b.PoiPriority !== undefined) q.POIs.getIndex(0).Priority.set(b.PoiPriority);
+	if (b.PoiObjectiveIndex !== undefined) q.POIs.getIndex(0).ObjectiveIndex.set(b.PoiObjectiveIndex);
+
+	if (b.ExclusiveGroup !== undefined) q.ExclusiveGroup.set(b.ExclusiveGroup);
+	if (b.BreadcrumbFor !== undefined) q.BreadcrumbForQuest.set(b.BreadcrumbFor);
+	if (b.PreviousQuest !== undefined) q.PrevQuest.set(b.PreviousQuest);
+	if (b.NextQuest !== undefined) q.NextQuest.set(b.NextQuest);
+	if (b.RewardNextQuest !== undefined) q.row.RewardNextQuest.set(b.RewardNextQuest); 
 
 	if (b.ClearItemObjectives) q.Objectives.Item.clearAll();
-	if (b.DeliveryItem) {
+	if (b.DeliveryItem !== undefined) {
 		let deliveryItem = buildItem(b.DeliveryItem);
 		q.StartItem.set(deliveryItem.ID);
 		q.Objectives.Item.addGet().Item.set(deliveryItem.ID).Count.set(1);
 	}
 
-	if (b.ClassMask) {
+	if (b.ClassMask !== undefined) {
 		q.ClassMask.clearAll();
 		q.ClassMask.set(b.ClassMask, b.ClassMaskMode);
 	}
-	if (b.RaceMask) {
+	if (b.RaceMask !== undefined) {
 		q.RaceMask.clearAll();
 		q.RaceMask.set(b.RaceMask, b.RaceMaskMode);
 	}
 
-	if (b.ReplaceText){
+	if (b.ReplaceText !== undefined){
 		if (q.Name.enGB.get().search(b.ReplaceText.from)) q.Name.enGB.set(q.Name.enGB.get().replace(b.ReplaceText.from, b.ReplaceText.to));
 		if (q.PickupText.enGB.get().search(b.ReplaceText.from)) q.PickupText.enGB.set(q.PickupText.enGB.get().replace(b.ReplaceText.from, b.ReplaceText.to));
 		if (q.CompleteText.enGB.get().search(b.ReplaceText.from)) q.CompleteText.enGB.set(q.CompleteText.enGB.get().replace(b.ReplaceText.from, b.ReplaceText.to));
